@@ -13,13 +13,6 @@
 namespace http
 {
 
-
-namespace
-{
-
-
-}   // end of local namespace
-
 body::body(const std::string& b) : data(b)
 {
 }
@@ -28,21 +21,6 @@ body& body::operator = (const std::string& s)
 {
     data = s;
     return *this;
-}
-
-const std::string& body::value() const
-{
-    return data;
-}
-
-std::string::size_type body::size() const
-{
-    return value().size();
-}
-
-bool body::empty() const
-{
-    return value().empty();
 }
 
 std::string::value_type* body::start()
