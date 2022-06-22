@@ -26,11 +26,17 @@ struct body
         std::copy(from, to, std::back_inserter(data));
     }
 
-    const std::string& value() const;
+    constexpr const std::string& value() const {
+        return data;
+    }
 
-    std::string::size_type size() const;
+    constexpr std::string::size_type size() const {
+        return data().size();
+    }
 
-    bool empty() const;
+    constxpr bool empty() const {
+        return data().empty();
+    }
 
     const std::string::value_type* start() const;
     std::string::value_type* start();
