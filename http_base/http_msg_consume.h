@@ -114,11 +114,11 @@ inline bool save_headers_(R& input, headers_list& headers)
 {
     // loop over the "lines" in the message and convert them to header lines
     std::string header = sub_string(input, '\n', '\r');
-    while (not_empty(header) && header != the_delimiter.value()) {
+    while (not std::empty(header) && header != the_delimiter.value()) {
         headers.insert(make_header(header));
         header = sub_string(input, '\n', '\r');
     }
-    return not_empty(headers);
+    return not std::empty(headers);
 }
 
 struct read_headers_ref
@@ -160,7 +160,7 @@ std::size_t read_chunk_len(Conn& socket)
     auto i =   socket.read(term);
     if (i > 0) {
         auto cls = string_cast(socket, '\n', '\r');
-        if (not_empty(cls)) { // make sure that we have this line!
+        if (not std::empty(cls)) { // make sure that we have this line!
             //std::cout<<"found chunked length to be '"<<cls<<"'"<<std::endl;
             return strtol(cls.c_str(), nullptr, 16);
         }

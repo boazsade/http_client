@@ -2,6 +2,7 @@
 #include "http_stream.h"
 #include "http_networking.h"
 #include "http_base/http_error.h"
+#include "http_base/http_msg_consume.h"
 #include "http_send.h"
 #include "http_base/http_response.h"
 #include "http_client_shared.hpp"
@@ -54,7 +55,7 @@ bool client::send(const put& put_request)
 
 http::response client::read()
 {
-    return read_response(conn);
+    return get_response(conn);
 }
 
 bool client::is_open() const
@@ -106,7 +107,7 @@ bool shared_client::send(const put& put_request)
 
 http::response shared_client::read()
 {
-    return read_response(conn);
+    return get_response(conn);
 }
 
 bool shared_client::is_open() const

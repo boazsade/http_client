@@ -11,10 +11,6 @@ namespace http
 struct body
 {
     body() = default;
-    body(body&&) = default;
-    body(const body&) = default;
-    body& operator = (const body&) = default;
-    body& operator = (body&) = default;
 
     explicit body(const std::string& b);
 
@@ -30,12 +26,12 @@ struct body
         return data;
     }
 
-    constexpr std::string::size_type size() const {
-        return data().size();
+    std::string::size_type size() const {
+        return value().size();
     }
 
-    constxpr bool empty() const {
-        return data().empty();
+    bool empty() const {
+        return value().empty();
     }
 
     const std::string::value_type* start() const;

@@ -37,10 +37,8 @@ body get_body_from(const std::string& from)
         auto i =
                   boost::algorithm::make_split_iterator(from, boost::algorithm::first_finder(body_delim.c_str(), 
                                                             boost::algorithm::is_equal()));
-        //if (i != iterator_type()) {
             ++i;
             return body(boost::copy_range<std::string>(*i));
-        //}
     }
     static const body empty = body(std::string());
     return empty;
@@ -504,7 +502,7 @@ std::ostream& operator <<(std::ostream& os, const response& r)
         os<<"["<<i++<<": "<<*hdrs.first<<"]\n";
         hdrs.first++;
     }
-    if (not_empty(r.payload())) {
+    if (not std::empty(r.payload())) {
         os<<"\nmessage body:\n"<<r.payload().value();
     } else {
         os<<"\nno message body";

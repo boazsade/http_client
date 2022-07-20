@@ -13,6 +13,17 @@
 namespace http
 {
 
+auto unzip(auto msg) {
+    boost::iostreams::filtering_streambuf<boost::iostreams::input> in;
+    in.push(boost::iostreams::gzip_decompressor{});
+    std::istringstream input{msg.value(), std::ios_base::in | std::ios_base::binary};
+    in.push(input);
+    std::ostringstream out;
+    boost::iostreams::copy(in, out);
+    return body{out.str()};
+}
+
+
 body::body(const std::string& b) : data(b)
 {
 }
@@ -36,16 +47,9 @@ const std::string::value_type* body::start() const
 bool inflate(body& payload)
 {
     if (!payload.empty()) {
-        std::vector<char> result;
-        if (unzip(result, (const std::uint8_t*)payload.start(), payload.size())) {
-            payload = std::string{result.begin(), result.end()};
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return false;
+        payload = unzip(std::move(payload));
     }
+    return not payload.empty();
 }
 
 }   // end of namespace http

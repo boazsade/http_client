@@ -4,8 +4,6 @@
 #include <boost/asio.hpp>
 #include <memory> 
 
-namespace ups
-{
 
 namespace http
 {
@@ -75,5 +73,4 @@ private:
 };
 
 }	// end of namespace http
-}	// end of namespace ups
 
