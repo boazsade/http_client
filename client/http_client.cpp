@@ -5,7 +5,8 @@
 #include "http_base/http_msg_consume.h"
 #include "http_send.h"
 #include "http_base/http_response.h"
-#include "http_client_shared.hpp"
+#include "http_read_proxy.h"
+//#include "http_client_shared.hpp"
 #include <boost/asio.hpp>
 #include <iostream>
 #include <string>
@@ -55,7 +56,7 @@ bool client::send(const put& put_request)
 
 http::response client::read()
 {
-    return get_response(conn);
+    return get_response(network_read_proxy<connection_type>::make_proxy(conn));
 }
 
 bool client::is_open() const
@@ -107,7 +108,7 @@ bool shared_client::send(const put& put_request)
 
 http::response shared_client::read()
 {
-    return get_response(conn);
+    return get_response(network_read_proxy<connection_type>::make_proxy(conn));
 }
 
 bool shared_client::is_open() const

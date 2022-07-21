@@ -1,6 +1,6 @@
 #pragma once
-#include "libs/http_client/http_types.h"
-#include "libs/http_client/http_secure_args.h"
+#include "client/http_types.h"
+#include "client/http_secure_args.h"
 #include <boost/asio.hpp>
 #include <memory> 
 

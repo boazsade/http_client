@@ -12,7 +12,7 @@
 
 
 struct length_reader {
-    explicit length_reader(std::size_t s) : expected_size(s)
+    explicit length_reader(std::size_t s) : expected_size{s}
     {
     }
 
@@ -20,7 +20,7 @@ struct length_reader {
     std::pair<It, bool>
     operator () (It begin, It end) const
     {
-        auto diff = std::distance(begin, end);
+        const auto diff = std::distance(begin, end);
         //std::cout<<"we have "<<diff<<" bytes, we have "<<expected_size<<" still to read"<<std::endl;
         if (diff < 0 || expected_size == 0) {
             //std::cout<<"finish reading - we read what we expected"<<std::endl;
@@ -28,7 +28,7 @@ struct length_reader {
         } else if (diff == 0) {
             return std::make_pair(begin, expected_size == 0);
         } else {    // check if we read enough
-            auto step = std::min((std::size_t)diff, expected_size);
+            const auto step = std::min((std::size_t)diff, expected_size);
             //std::cout<<"moving forward "<<step<<" number of bytes"<<std::endl;
             expected_size -= (std::size_t)step;
             std::advance(begin, step);
@@ -95,25 +95,18 @@ bool save_headers_(R& input, headers_list& headers);
 
 template<typename Conn, typename Cond> inline
 std::string read_body(Conn& input, Cond pred)
-{
-    //boost::system::error_code error;
-    //boost::asio::streambuf res;
-    
-    std::size_t bytes = input.read_until(pred);
-    std::string msg_body ;
+{   
+    const auto bytes = input.read_until(pred);
     //std::cout<<"read "<<bytes<<" bytes so far from the server (we have "<<res.size()<<" in the buffer"<<std::endl;
-    if (bytes != 0) {
-       msg_body = string_cast(input, bytes);
-    } 
-    //std::cout<<"saving body size as "<<msg_body.size()<<" of bytes"<<std::endl;
-    return msg_body;  
+    return  bytes != 0 ?
+       string_cast(input, bytes) : std::string{};
 }
 
 template<typename R>
 inline bool save_headers_(R& input, headers_list& headers)
 {
     // loop over the "lines" in the message and convert them to header lines
-    std::string header = sub_string(input, '\n', '\r');
+    auto header = sub_string(input, '\n', '\r');
     while (not std::empty(header) && header != the_delimiter.value()) {
         headers.insert(make_header(header));
         header = sub_string(input, '\n', '\r');
@@ -143,12 +136,11 @@ template<typename Conn> inline
 std::string read_eof(Conn& input)
 {
     // read until we have EOF "error"
-    std::string body = string_cast(input);   // first extract whatever we still have in the buffer
+    const std::string body = string_cast(input);   // first extract whatever we still have in the buffer
     //std::cout<<"message body so far "<<body.size()<<std::endl;
     input.read_all();
     //std::cout<<"successfully read "<<buff.size()<<" ( "<<s<<" )"<<std::endl;
-    body += string_cast(input);
-    return body;
+    return body + string_cast(input);
 }
 
 template<typename Conn> inline 
@@ -157,9 +149,10 @@ std::size_t read_chunk_len(Conn& socket)
     // the chunk length is the first line after the headers, find this line
     // and read the length of the chunk
     static const std::string term = "\r\n";
-    auto i =   socket.read(term);
+
+    const auto i =   socket.read(term);
     if (i > 0) {
-        auto cls = string_cast(socket, '\n', '\r');
+        const auto cls = string_cast(socket, '\n', '\r');
         if (not std::empty(cls)) { // make sure that we have this line!
             //std::cout<<"found chunked length to be '"<<cls<<"'"<<std::endl;
             return strtol(cls.c_str(), nullptr, 16);
@@ -181,7 +174,7 @@ std::string read_chunks(Conn& socket, std::size_t len)
         s += len;
     }
     if (len == 0) {
-        std::string el{std::to_string(len)};
+        const std::string el{std::to_string(len)};
         throw network_error("failed to read message body " + el);
     }
     return body;
@@ -191,14 +184,16 @@ template<typename Conn> inline
 std::size_t content_length(Conn& socket,  const headers_list& hl)
 {
     using namespace http::literals;
+
     static const auto length_header = "Content-Length"_hdrk;
+
     std::size_t ret = 0;
     if (chunked_message(hl)) {   // handle the case with chunked data to tell what is the length
         ret = read_chunk_len(socket);
     }
     if (ret == 0) {
         //std::cout<<"no chunked length trying to read "<<length_header<<std::endl;
-        auto i = cfind(hl, length_header);
+        const auto i = cfind(hl, length_header);
         if (i != std::end(hl)) {
             //std::cout<<"find length header "<<*i<<std::endl;
             ret = boost::lexical_cast<std::size_t>(i->value().get());
@@ -233,8 +228,8 @@ std::string get_message_body(Conn& io, const status_line& sline,
     if (no_content(sline)) {
         return msg_body;
     }
-    bool keepalive = keep_alive(hl, sline.version_1());
-    bool chunked = chunked_message(hl);
+    const auto keepalive = keep_alive(hl, sline.version_1());
+    const auto chunked = chunked_message(hl);
     if (keepalive || chunked) {      // just read to the end of the message
         return get_body_by_len(io, hl, chunked);
     } else {
@@ -247,7 +242,7 @@ std::string get_message_body(Conn& io, const status_line& sline,
 template<typename Conn> inline 
 status_line read_status(Conn& input)
 {
-    auto bytes = input.read(the_delimiter.value());
+    const auto bytes = input.read(the_delimiter.value());
     if (bytes) {
         return status_line {string_cast(input, '\n', '\r')};
     } else {
@@ -259,11 +254,11 @@ status_line read_status(Conn& input)
 template<typename Conn> inline 
 any_request_line read_requst_line(Conn& input)
 {
-    auto bytes = input.read(the_delimiter.value());
+    const auto bytes = input.read(the_delimiter.value());
     if (bytes) {
         return any_request_line {string_cast(input, '\n', '\r')};
     } else {
-        static const any_request_line bad_line = any_request_line{};
+        static const auto bad_line = any_request_line{};
         return bad_line;
     }
 }
@@ -282,7 +277,7 @@ headers_list read_headers(Conn& input)
         input.commit();
         return hl;
     } else {
-        static const headers_list bad_headers = headers_list{};
+        static const auto bad_headers = headers_list{};
         return bad_headers;
     }
 }
@@ -301,14 +296,14 @@ body message_body(Conn& io,
 }
 
 template<typename Conn> inline
-response get_response(Conn& io)
+response get_response(Conn io)
 {
     static const response bad_response = response{};
     try {
-        auto sl = read_status(io);
-        auto headers = read_headers(io);
+        const auto sl = read_status(io);
+        const auto headers = read_headers(io);
         if (!headers.empty()) {
-            auto b = message_body(io, headers, sl);
+            const auto b = message_body(io, headers, sl);
             return response{sl, headers, b};
         } else {
             return response{sl};
