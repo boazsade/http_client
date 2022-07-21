@@ -6,3 +6,5 @@ This library uses boost, speicfically it uses boost ASIO and boost iostreams. pl
 
 How to use this
 See the subdirectory examples for use of this code
+
+Note that this uses boost and openssl (need to install them to build), and it assumes c++ 20
