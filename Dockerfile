@@ -12,4 +12,4 @@ RUN apt update && \
 RUN mkdir /builds
 COPY .  /builds
 WORKDIR /builds
-#CMD [make all]
+ENTRYPOINT ["make", "all"]
