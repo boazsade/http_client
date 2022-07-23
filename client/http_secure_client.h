@@ -24,8 +24,8 @@ public:
 
     secure_client(boost::asio::io_service& ios, security_args& initiator);
 
-    secure_client(secure_client&& other);
-    secure_client& operator = (secure_client&& other);
+    secure_client(secure_client&& other) = default;
+    secure_client& operator = (secure_client&& other) = default;
 
     bool open(const host_address& server);
 

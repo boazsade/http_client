@@ -58,7 +58,7 @@ struct response_istream
     using client_type = CT;
     using connection_type = typename client_type::connection_type;
 
-    response_istream(client_type* ct, bool s) : clt(ct), state(s), reader(clt->start_input())
+    response_istream(client_type* ct, bool s) : state(s), clt(ct), reader(clt->start_input())
     {
     }
 
@@ -131,8 +131,8 @@ struct response_istream
     }
 
 private:
-    bool state;
-    client_type* clt;
+    bool state{false};
+    client_type* clt{nullptr};
     response result;
     network_read_proxy<connection_type> reader;
 };

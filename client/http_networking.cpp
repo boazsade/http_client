@@ -1,5 +1,5 @@
 #include "http_networking.h"
-#include "http_client_shared.hpp"
+//#include "http_client_shared.hpp"
 #include <iostream>
 
 
@@ -26,6 +26,12 @@ int verification_mode(int ac)
         }
         return ret;
     }
+}
+
+auto make_connection(const auto& query, auto& stream, auto& resolver) -> bool {
+    boost::system::error_code ec;
+    boost::asio::connect(stream, resolver.resolve(query), ec);
+    return ec.value() == 0;  // we want this to be false, since true means we have an error
 }
 
 template<typename C>

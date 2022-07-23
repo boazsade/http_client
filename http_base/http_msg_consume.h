@@ -54,6 +54,15 @@ struct chucked_matcher {
     }
 };
 
+namespace boost { namespace asio {
+    template <> struct is_match_condition<length_reader>
+        : public boost::true_type {};
+
+    template <> struct is_match_condition<chucked_matcher>
+        : public boost::true_type {};
+} // namespace asio 
+}   // namespace boost
+
 
 namespace http
 {

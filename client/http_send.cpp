@@ -1,5 +1,5 @@
 #include "http_send.h"
-#include "http_client_shared.hpp"
+//#include "http_client_shared.hpp"
 #include "http_connection.h"
 #include "http_client.h"
 #include "http_secure_client.h"

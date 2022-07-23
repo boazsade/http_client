@@ -1,9 +1,10 @@
 #include "http_secure_client.h"
-#include "http_client_shared.hpp"
+//#include "http_client_shared.hpp"
 #include "http_stream.h"
 #include "http_networking.h"
 #include "http_networking.h"
 #include "http_send.h"
+#include "http_base/http_msg_consume.h"
 #include <string>
 
 
@@ -27,18 +28,18 @@ secure_client::secure_client(boost::asio::io_service& ios, security_args& initia
 {
 }
 
-secure_client::secure_client(secure_client&& other) : conn(*other.conn.service_handle(), default_sec_args())
-{
-    std::swap(*this, other);
-}
+// secure_client::secure_client(secure_client&& other) : conn(*other.conn.service_handle(), default_sec_args())
+// {
+//     std::swap(*this, other);
+// }
 
-secure_client& secure_client::operator = (secure_client&& other)
-{
-    if (this != &other) {
-        std::swap(other, *this);
-    }
-    return *this;
-}
+// secure_client& secure_client::operator = (secure_client&& other)
+// {
+//     if (this != &other) {
+//         std::swap(other, *this);
+//     }
+//     return *this;
+// }
 
 
 bool secure_client::open(const host_address& adr)
@@ -63,7 +64,7 @@ bool secure_client::send(const put&  request)
 
 response secure_client::read()
 {
-    return http::read_response(conn);
+    return http::get_response(network_read_proxy<connection_type>::make_proxy(conn));
 }
 
 bool secure_client::is_open() const
@@ -115,7 +116,7 @@ bool shared_secured_client::send(const put&  request)
 response shared_secured_client::read()
 {
     auto reader{start_input()};
-    return http::get_response(reader);
+    return http::get_response(network_read_proxy<connection_type>::make_proxy(conn));
 }
 
 bool shared_secured_client::is_open() const

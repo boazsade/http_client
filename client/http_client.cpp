@@ -22,18 +22,18 @@ client::client(boost::asio::io_service& io_service)
 {
 }
 
-client::client(client&& other) : conn(*other.conn.service_handle())
-{
-    std::swap(*this, other);
-}
+// client::client(client&& other) : conn(*other.conn.service_handle())
+// {
+//     std::swap(*this, other);
+// }
 
-client& client::operator = (client&& other)
-{
-    if (this != &other) {
-        std::swap(*this, other);
-    }
-    return *this;
-}
+// client& client::operator = (client&& other)
+// {
+//     if (this != &other) {
+//         std::swap(*this, other);
+//     }
+//     return *this;
+// }
 bool  client::open(const host_address& server)
 {
     return http::open(conn, server);

@@ -22,8 +22,8 @@ public:
 
     explicit client(boost::asio::io_service& io_service);
     
-    client(client&& other);
-    client& operator = (client&& other);
+    client(client&& other) = default;
+    client& operator = (client&&) = default;
 
     client(const client& ) = default;
 

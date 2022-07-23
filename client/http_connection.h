@@ -1,7 +1,8 @@
 #pragma once
 #include "client/http_types.h"
 #include <boost/asio.hpp>
-#include <memory> 
+#include <memory>
+#include <optional>
 
 
 namespace http
@@ -19,7 +20,10 @@ public:
 
     socket_type* get();
 
-    boost::asio::io_service* service_handle();
+    //boost::asio::io_service* service_handle();
+    std::optional<socket_type::executor_type> service_handle() {
+        return {socket_.get_executor()};
+    }
 
     bool is_open() const;
 
@@ -50,7 +54,9 @@ public:
     socket_type* get();
     const socket_type* get() const;
 
-    boost::asio::io_service* service_handle();
+    std::optional<socket_type::executor_type> service_handle() {
+        return get() ? std::optional<socket_type::executor_type>{get()->get_executor()} : std::nullopt;
+    }
 
     bool is_open() const;
 

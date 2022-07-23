@@ -19,10 +19,10 @@ connection::socket_type* connection::get()
     return &socket_;
 }
 
-boost::asio::io_service* connection::service_handle()
-{
-    return &socket_.get_io_service();
-}
+// boost::asio::io_service* connection::service_handle()
+// {
+//     return &socket_.get_executor();
+// }
 
 bool connection::is_open() const
 {
@@ -61,10 +61,10 @@ const shared_connection::socket_type* shared_connection::get() const
     return socket_.get();
 }
 
-boost::asio::io_service* shared_connection::service_handle()
-{
-    return get() ? &socket_->get_io_service() : nullptr;
-}
+// boost::asio::io_service* shared_connection::service_handle()
+// {
+//     return get() ? &socket_->get_executor() : nullptr;
+// }
 
 bool shared_connection::is_open() const
 {

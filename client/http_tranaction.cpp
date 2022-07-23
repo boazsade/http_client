@@ -1,5 +1,6 @@
 #include "http_tranaction.h"
-#include "http_client_shared.hpp"
+#include "http_base/http_msg_consume.h"
+//#include "http_client_shared.hpp"
 
 namespace http
 {

@@ -84,6 +84,7 @@ int type2boost_type_client(https_config::type t)
         case https_config::TYPE_NOT_SET:
             return -1;
     }
+    return -1;
 }
 
 int type2boost_type_sever(https_config::type t)
@@ -104,6 +105,7 @@ int type2boost_type_sever(https_config::type t)
         case https_config::TYPE_NOT_SET:
             return -1;
     }
+    return -1;
 }
 
 int type2boost_type(https_config::type t)
@@ -124,6 +126,7 @@ int type2boost_type(https_config::type t)
         case https_config::TYPE_NOT_SET:
             return -1;
     }
+    return -1;
 }
 
 
@@ -137,6 +140,7 @@ int convert2action(https_config::type t, https_config::which w)
         default:
             return type2boost_type(t);
     }
+    return type2boost_type(t);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
