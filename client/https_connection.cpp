@@ -31,11 +31,6 @@ secure_connection::socket_type* secure_connection::get()
     return &socket_;
 }
 
-boost::asio::io_service* secure_connection::service_handle()
-{
-    return &socket_.lowest_layer().get_io_service();
-}
-
 bool secure_connection::is_open() const
 {
     return socket_.lowest_layer().is_open();
@@ -73,11 +68,6 @@ const secure_shared_connection::socket_type* secure_shared_connection::get() con
 {
     return socket_.get();
 }
-
-// boost::asio::io_service* secure_shared_connection::service_handle()
-// {
-//     return get() ? &(socket_->lowest_layer().get_io_service()) : nullptr;
-// }
 
 bool secure_shared_connection::is_open() const
 {

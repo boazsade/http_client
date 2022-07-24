@@ -20,7 +20,6 @@ public:
 
     socket_type* get();
 
-    //boost::asio::io_service* service_handle();
     std::optional<socket_type::executor_type> service_handle() {
         return {socket_.get_executor()};
     }

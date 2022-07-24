@@ -12,6 +12,17 @@ namespace http
 namespace 
 {
 
+auto send_request(auto& socket, const auto& msg) -> bool {
+    boost::system::error_code ec;
+    const auto msg_size = msg.size();
+    auto buff{boost::asio::buffer(msg)};
+    auto size = boost::asio::write(socket, buff);
+    while (size < msg_size && (ec == boost::asio::error::try_again|| ec == boost::asio::error::would_block)) {
+        size += boost::asio::write(socket, buff);
+    }
+    return size == msg_size;
+}
+
 template<typename C, typename R>
 bool send_message(C& connection, const R& request)
 {

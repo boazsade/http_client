@@ -14,11 +14,11 @@ namespace http
 namespace 
 {
 
-security_args& default_sec_args()   // note that this is not for use, it is just to create fake object
-{
-    static security_args dummy_args = security_args{};
-    return dummy_args;
-}
+// security_args& default_sec_args()   // note that this is not for use, it is just to create fake object
+// {
+//     static security_args dummy_args = security_args{};
+//     return dummy_args;
+// }
 
 }   // end of local namespace 
 
@@ -27,19 +27,6 @@ security_args& default_sec_args()   // note that this is not for use, it is just
 secure_client::secure_client(boost::asio::io_service& ios, security_args& initiator) : conn(ios, initiator)
 {
 }
-
-// secure_client::secure_client(secure_client&& other) : conn(*other.conn.service_handle(), default_sec_args())
-// {
-//     std::swap(*this, other);
-// }
-
-// secure_client& secure_client::operator = (secure_client&& other)
-// {
-//     if (this != &other) {
-//         std::swap(other, *this);
-//     }
-//     return *this;
-// }
 
 
 bool secure_client::open(const host_address& adr)
