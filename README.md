@@ -5,6 +5,19 @@ You can create both http and https connections, and this supports compressed and
 ## How to use this
 See the subdirectory examples for use of this code
 
+An example for building a put message to the server:
+```cpp
+void build_request(http_put& with, const char* resource, const std::string& host, const char* b)
+{
+    using namespace std::string_literals;
+    using namespace http::literals;
+        with<<http::resource{resource}<<http::v1_1
+            <<("User-Agent"_hdrk + "curl/7.29.0"_hdrv)
+            <<("Host"_hdrk + http::header_value(host))
+            <<http::body_entry(http::body(b), "application/json"s);
+}
+```
+
 ## Note
 - that this uses boost and openssl (need to install them to build), and it assumes c++ 20
 - This library uses boost, speicfically it uses boost ASIO and boost iostreams. please also note that the compression/uncompress is done in boost iostrams that uses Z lib, so you need to have that one as well installed
